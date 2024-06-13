@@ -732,7 +732,7 @@
 			{
 				"name": "Launch Aura (Debug)",
 				"request": "launch",
-				"program": "H:\\Github Repo\\UFA_GAS_Aura\\Binaries\\Win64\\Aura-Win64-Debug.exe",
+				"program": "H:\\Github Repo\\UFA_GAS_Aura\\Binaries\\Win64\\UnrealGame-Win64-Debug.exe",
 				"preLaunchTask": "Aura Win64 Debug Build",
 				"args": [
 				],
@@ -748,7 +748,7 @@
 			{
 				"name": "Launch Aura (DebugGame)",
 				"request": "launch",
-				"program": "H:\\Github Repo\\UFA_GAS_Aura\\Binaries\\Win64\\Aura-Win64-DebugGame.exe",
+				"program": "H:\\Github Repo\\UFA_GAS_Aura\\Binaries\\Win64\\UnrealGame-Win64-DebugGame.exe",
 				"preLaunchTask": "Aura Win64 DebugGame Build",
 				"args": [
 				],
@@ -764,7 +764,7 @@
 			{
 				"name": "Launch Aura (Development)",
 				"request": "launch",
-				"program": "H:\\Github Repo\\UFA_GAS_Aura\\Binaries\\Win64\\Aura.exe",
+				"program": "H:\\Github Repo\\UFA_GAS_Aura\\Binaries\\Win64\\UnrealGame.exe",
 				"preLaunchTask": "Aura Win64 Development Build",
 				"args": [
 				],
@@ -780,7 +780,7 @@
 			{
 				"name": "Launch Aura (Test)",
 				"request": "launch",
-				"program": "H:\\Github Repo\\UFA_GAS_Aura\\Binaries\\Win64\\Aura-Win64-Test.exe",
+				"program": "H:\\Github Repo\\UFA_GAS_Aura\\Binaries\\Win64\\UnrealGame-Win64-Test.exe",
 				"preLaunchTask": "Aura Win64 Test Build",
 				"args": [
 				],
@@ -796,7 +796,7 @@
 			{
 				"name": "Launch Aura (Shipping)",
 				"request": "launch",
-				"program": "H:\\Github Repo\\UFA_GAS_Aura\\Binaries\\Win64\\Aura-Win64-Shipping.exe",
+				"program": "H:\\Github Repo\\UFA_GAS_Aura\\Binaries\\Win64\\UnrealGame-Win64-Shipping.exe",
 				"preLaunchTask": "Aura Win64 Shipping Build",
 				"args": [
 				],

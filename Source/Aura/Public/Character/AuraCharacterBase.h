@@ -3,17 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "GameFramework/Character.h"
 #include "AuraCharacterBase.generated.h"
 
+class UAuraAbilitySystemComponent;
+class UAttributeSet;
+
 UCLASS(Abstract)
-class AURA_API AAuraCharacterBase : public ACharacter
+//IAbilitySystemInterface is an interface that allows quick access to an object's Ability System
+class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	AAuraCharacterBase();
-
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UAttributeSet* GetAttributeSet() const {return AttributeSet;}
 protected:
 	virtual void BeginPlay() override;
 	// TObjectPtr is a raw pointer that support access tracking and optional lazy load behavior
@@ -22,5 +29,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
+	UPROPERTY()
+	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
 
+	UPROPERTY()
+	TObjectPtr<UAttributeSet> AttributeSet;
 };

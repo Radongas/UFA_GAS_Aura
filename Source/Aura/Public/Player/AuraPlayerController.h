@@ -10,6 +10,7 @@
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class IEnemyInterface;
 /**
  * 
  */
@@ -19,6 +20,7 @@ class AURA_API AAuraPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	AAuraPlayerController();
+	virtual void PlayerTick(float DeltaTime) override;
 protected:
 	virtual void BeginPlay() override;
 	virtual  void SetupInputComponent() override;
@@ -30,4 +32,11 @@ private:
 	TObjectPtr<UInputAction> MoveAction;
 
 	void Move(const struct FInputActionValue& InputActionValue);
+
+	void CursorTrace();
+	//this is an interface wrapper of type T
+	TScriptInterface<IEnemyInterface> LastActor;
+	TScriptInterface<IEnemyInterface> ThisActor;
+
+	
 };

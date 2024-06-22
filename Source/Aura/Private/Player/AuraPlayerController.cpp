@@ -27,8 +27,11 @@ void AAuraPlayerController::BeginPlay()
     check(AuraContext);
     // subsystem is a singleton to add mapping context
     UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-    check(Subsystem);
-    Subsystem->AddMappingContext(AuraContext, 0);
+    //this will work for multiplayer because the local machine will have the subsystem while the replication from other clients wont have
+    if (Subsystem)
+    {
+        Subsystem->AddMappingContext(AuraContext, 0);
+    }
     
     bShowMouseCursor = true;
     DefaultMouseCursor = EMouseCursor::Default;

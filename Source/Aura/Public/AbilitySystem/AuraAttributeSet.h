@@ -15,6 +15,41 @@
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
 
+USTRUCT()
+struct FEffectProperties
+{
+	GENERATED_BODY()
+	FEffectProperties(){}
+
+	UPROPERTY()
+	UAbilitySystemComponent* SourceASC = nullptr;
+
+	UPROPERTY()
+	AActor* SourceAvatarActor = nullptr;
+
+	UPROPERTY()
+	AController* SourceController = nullptr;
+
+	UPROPERTY()
+	ACharacter* SourceCharacter = nullptr;
+	
+	UPROPERTY()
+	FGameplayEffectContextHandle EffectContextHandle;
+
+	UPROPERTY()
+	UAbilitySystemComponent* TargetASC = nullptr;
+
+	UPROPERTY()
+	AActor* TargetAvatarActor = nullptr;
+
+	UPROPERTY()
+	AController* TargetController = nullptr;
+
+	UPROPERTY()
+	ACharacter* TargetCharacter = nullptr;
+	
+};
+
 /**
  * 
  */
@@ -26,6 +61,10 @@ public:
 	UAuraAttributeSet();
 	// a function that has to be implemented to allow a variable to be replicated
 	virtual  void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	virtual  void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+
+	virtual	void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
 	//indicating that the variable is replicatable, when the replication happens from server to client, the client will have a replication notifier which is a function with convention OnRep_AttributeName
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes");
@@ -55,5 +94,8 @@ public:
 	void OnRep_Mana(const FGameplayAttributeData OldMana) const;
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData OldMaxMana) const;
-	
+
+
+private:
+	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
 };

@@ -41,6 +41,7 @@ int32 AAuraCharacter::GetPlayerLevel()
 	return AuraPlayerState->GetPlayerLevel();
 }
 
+
 void AAuraCharacter::InitAbilityActorInfo()
 {
 	// Init ability actor info for the Server

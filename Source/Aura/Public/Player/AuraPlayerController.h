@@ -26,6 +26,7 @@ class AURA_API AAuraPlayerController : public APlayerController
 public:
 	AAuraPlayerController();
 	virtual void PlayerTick(float DeltaTime) override;
+	FHitResult GetCursorHitResult(){return CursorHit;}
 protected:
 	virtual void BeginPlay() override;
 	virtual  void SetupInputComponent() override;
@@ -36,6 +37,13 @@ private:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> MoveAction;
 
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> ShiftAction;
+
+	bool bShiftKeyDown = false;
+	void ShiftPressed(){bShiftKeyDown = true;}
+	void ShiftReleased(){bShiftKeyDown = false;}
+	
 	void Move(const struct FInputActionValue& InputActionValue);
 
 	void CursorTrace();

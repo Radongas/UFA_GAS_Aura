@@ -9,6 +9,7 @@
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Character/AuraCharacter.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Pawn.h"
 #include "Engine/LocalPlayer.h"
@@ -89,7 +90,8 @@ void AAuraPlayerController::SetupInputComponent()
     //3rd: user object, in this case, it is this player controller, aka AuraPlayerController
     //4th: callback function that will be executed when triggered
     AuraInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
-
+    AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AAuraPlayerController::ShiftPressed);
+    AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AAuraPlayerController::ShiftReleased);
     AuraInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 
@@ -114,7 +116,7 @@ void AAuraPlayerController::CursorTrace()
     GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
     if (!CursorHit.bBlockingHit) return;
     // if there is a hit and the hit target has implemented IEnemyInterface, there will be a return to the CursorHit
-    //otherwise, it will reture a null pointer in CursorHit
+    //otherwise, it will return a null pointer in CursorHit
     Cast<IEnemyInterface>(CursorHit.GetActor());
     LastActor = ThisActor;
     ThisActor = CursorHit.GetActor();
@@ -130,50 +132,6 @@ void AAuraPlayerController::CursorTrace()
             ThisActor->HighlightActor();
         }
     }
-    
-    // /*
-    //  * Line trace from cursor, there are several senarios:
-    //  * A. LastActor is null && ThisActor is null
-    //  *  - Do nothing
-    //  * B. LastActor is null && ThisActor is valid
-    //  *  - Highlight ThisActor
-    //  * C. LastActor is valid && ThisActor is null
-    //  *  - Unhighlight LastActor
-    //  * D. Both actors are valid, but LastActor != ThisActor
-    //  *  - Unhighlight LastActor
-    //  *  - Highlight ThisActor
-    //  * E. Both actors are valid, and are the same actor
-    //  *  - Do nothing
-    //  */
-    // if (LastActor == nullptr)
-    // {
-    //     if(ThisActor != nullptr)
-    //     {
-    //         //case B
-    //         ThisActor->HighlightActor();
-    //     }
-    //     //case A
-    // }
-    // else
-    // {
-    //     if (ThisActor == nullptr)
-    //     {
-    //         //case C
-    //         LastActor->UnhighlightActor();
-    //     }
-    //     else
-    //     {
-    //         //both actors are valid
-    //         if (LastActor != ThisActor)
-    //         {
-    //             //case D
-    //             LastActor->UnhighlightActor();
-    //             ThisActor->HighlightActor();
-    //         }
-    //         //case E
-    //     }
-    // }
-    
 }
 
 void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
@@ -197,14 +155,12 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
         return;
     }
 
-    if (bTargeting)
+    if (GetAsc())
     {
-        if (GetAsc())
-        {
-            GetAsc()->AbilityInputTagReleased(InputTag);
-        }
+        GetAsc()->AbilityInputTagReleased(InputTag);
     }
-    else
+    
+    if (!bTargeting && !bShiftKeyDown)
     {
         const APawn* ControlledPawn = GetPawn();
         if (FollowTime <= ShortPressThreshold)
@@ -238,7 +194,7 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
         return;
     }
 
-    if (bTargeting)
+    if (bTargeting || bShiftKeyDown)
     {
         if (GetAsc())
         {

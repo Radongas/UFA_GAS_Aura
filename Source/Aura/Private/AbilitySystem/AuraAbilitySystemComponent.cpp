@@ -5,6 +5,8 @@
 
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
+#include "Character/AuraCharacter.h"
+#include "Player/AuraPlayerController.h"
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -32,7 +34,7 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputTag)
 {
 	if (!InputTag.IsValid()) return;
-	for(auto& AbilitySpec : GetActivatableAbilities())
+	for(FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
 		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
 		{

@@ -46,6 +46,8 @@ struct FEffectProperties
 
 	UPROPERTY()
 	ACharacter* TargetCharacter = nullptr;
+
+	
 	
 };
 
@@ -152,6 +154,12 @@ public:
 	// FGameplayAttributeData ExtraMaxMana;
 	// ATTRIBUTE_ACCESSORS(UAuraAttributeSet,ExtraMaxMana);
 
+	/*
+	 *
+	 * Vital Attributes
+	 */
+	
+
 	//indicating that the variable is replicatable, when the replication happens from server to client, the client will have a replication notifier which is a function with convention OnRep_AttributeName
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes");
 	FGameplayAttributeData Health;
@@ -169,6 +177,19 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Vital Attributes");
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet,MaxMana);
+
+
+
+	/*
+	 *
+	 *Meta Attributes
+	 * 
+	 */
+
+	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
+
 	
 
 	//indicate that the following function is a Rep function, if the function take 1 argument, it must be the in the type of the replicated variable
@@ -231,5 +252,6 @@ public:
 
 private:
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props);
+	void ShowFloatingText(const FEffectProperties& Props, float Damage) const;
 };
 

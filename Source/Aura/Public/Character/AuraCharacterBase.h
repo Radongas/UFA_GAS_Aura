@@ -26,18 +26,13 @@ public:
 	AAuraCharacterBase();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const {return AttributeSet;}
-	virtual void Die() override;
+	virtual void Die(FVector LastHitImpactVelocity) override;
 
 	UFUNCTION(NetMulticast, Reliable)
-	virtual void MulticastHandleDeath();
+	virtual void MulticastHandleDeath(FVector HitImpactVelocity);
 	
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FVector HitVelocity = FVector::Zero();
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FScalableFloat HitImpactScalar = 1.0f;
 protected:
 	virtual void BeginPlay() override;
 	// TObjectPtr is a raw pointer that support access tracking and optional lazy load behavior
@@ -96,6 +91,12 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+	UPROPERTY(EditAnywhere)
+	FVector LastHitVelocity = FVector::Zero();
+
+	UPROPERTY(EditAnywhere)
+	FScalableFloat DeathHitImpactScalar = 1.0f;
 
 	virtual void InitAbilityActorInfo();
 };

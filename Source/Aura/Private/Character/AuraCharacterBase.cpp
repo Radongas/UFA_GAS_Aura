@@ -28,13 +28,13 @@ UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-void AAuraCharacterBase::Die()
+void AAuraCharacterBase::Die(FVector LastHitImpactVelocity)
 {
 	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld,true));
-	MulticastHandleDeath_Implementation();
+	MulticastHandleDeath_Implementation(LastHitImpactVelocity);
 }
 
-void AAuraCharacterBase::MulticastHandleDeath_Implementation()
+void AAuraCharacterBase::MulticastHandleDeath_Implementation(FVector LastHitImpactVelocity)
 {
 	Weapon->SetEnableGravity(true);
 	Weapon->SetSimulatePhysics(true);
@@ -44,12 +44,11 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	GetMesh()->SetEnableGravity(true);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+
 	
-	//Add a launching effect to the ragdoll
-	//TODO: Fix replication issues
 	const FVector RandomAdjustmentVector = FVector(FMath::RandRange(-60.f, 60.f),FMath::RandRange(-60.f, 60.f), 0.f);
-	const FVector ResultVector = RandomAdjustmentVector.Rotation().RotateVector(HitVelocity);
-	GetMesh()->AddImpulseAtLocation(ResultVector * HitImpactScalar.Value * GetMesh()->GetMass(),GetActorLocation());
+	const FVector ResultVector = RandomAdjustmentVector.Rotation().RotateVector(LastHitImpactVelocity);
+	GetMesh()->AddImpulseAtLocation(ResultVector * GetMesh()->GetMass(),GetActorLocation());
 	
 	if (AAuraEnemy* EnemyActor = Cast<AAuraEnemy>(this))
 	{

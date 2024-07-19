@@ -9,8 +9,8 @@
 #include "Net/UnrealNetwork.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "Character/AuraCharacterBase.h"
 #include "Interaction/CombatInterface.h"
-#include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerController.h"
 
 
@@ -144,6 +144,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 
 	//Damage GE handling dealing damages
+	//The incoming damage is a meta attribute that is only set on server
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
 		const float LocalIncomingDamage = GetIncomingDamage();
@@ -156,7 +157,10 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			{
 				if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor))
 				{
-					CombatInterface->Die();
+					AAuraCharacterBase* TargetActor = Cast<AAuraCharacterBase>(Props.TargetAvatarActor);
+					//TargetActor->LastHitVelocity.Normalize();
+					const FVector DeathImpactVector = TargetActor->LastHitVelocity * TargetActor->DeathHitImpactScalar.Value;
+					CombatInterface->Die(DeathImpactVector);
 				}
 			}
 			else
@@ -179,7 +183,7 @@ void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float D
 {
 	if (Props.SourceCharacter != Props.TargetCharacter)
 	{
-		if(AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0)))
+		if(AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(Props.SourceCharacter->Controller))
 		{
 			PlayerController->ShowDamageNumber(Damage, Props.TargetCharacter, bIsBlockedHit, bIsCriticalHit);
 		}

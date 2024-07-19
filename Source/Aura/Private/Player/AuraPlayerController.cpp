@@ -56,7 +56,8 @@ void AAuraPlayerController::AutoRun()
 
 void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter, bool bIsBlockedHit, bool bIsCriticalHit)
 {
-    if (IsValid(TargetCharacter) && DamageTextComponentClass)
+    //the IsLocalController ensure that the function will only take effects when it is called by a local player, including the local player playing on the server machine
+    if (IsValid(TargetCharacter) && DamageTextComponentClass && IsLocalController())
     {
         UDamageTextComponent* DamageText = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
         DamageText->RegisterComponent();

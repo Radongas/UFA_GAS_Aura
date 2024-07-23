@@ -22,7 +22,13 @@ class AURA_API IEnemyInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	// = 0 means that this is a pure virtual function that doesnt require to be implemented in cpp
+	// = 0 means that this is a pure virtual function that doesn't require to be implemented in cpp
 	virtual void HighlightActor() = 0;
 	virtual void UnhighlightActor() = 0;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SetCombatTarget(AActor* ICombatTarget);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	AActor* GetCombatTarget() const;
 };

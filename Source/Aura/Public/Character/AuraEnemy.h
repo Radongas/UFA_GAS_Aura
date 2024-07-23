@@ -45,7 +45,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Combat")
 	bool bHitReacting =false;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	UPROPERTY(EditAnywhere, Category = "Combat")
 	float BaseWalkSpeed = 250.f;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
@@ -55,6 +55,12 @@ public:
 	virtual void Die(FVector LastHitImpactVelocity) override;
 	
 	virtual void HideHealthBarWidget();
+
+	UPROPERTY(BlueprintReadWrite, Category="Combat")
+	TObjectPtr<AActor> CombatTarget;
+
+	virtual void SetCombatTarget_Implementation(AActor* ICombatTarget) override;
+	virtual AActor* GetCombatTarget_Implementation() const override;
 	
 protected:
 	virtual void BeginPlay() override;

@@ -4,6 +4,7 @@
 #include "Character/AuraCharacter.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMaterialLibrary.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
@@ -40,7 +41,6 @@ int32 AAuraCharacter::GetPlayerLevel()
 	check(AuraPlayerState);
 	return AuraPlayerState->GetPlayerLevel();
 }
-
 
 void AAuraCharacter::InitAbilityActorInfo()
 {

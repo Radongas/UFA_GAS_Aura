@@ -7,6 +7,7 @@
 #include "Aura/Aura.h"
 #include "Character/AuraEnemy.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
 // Sets default values
@@ -38,6 +39,7 @@ void AAuraCharacterBase::Die(FVector LastHitImpactVelocity)
 
 void AAuraCharacterBase::MulticastHandleDeath_Implementation(FVector LastHitImpactVelocity)
 {
+	UGameplayStatics::PlaySoundAtLocation(this,DeathSound,GetActorLocation(),GetActorRotation());
 	Weapon->SetEnableGravity(true);
 	Weapon->SetSimulatePhysics(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
@@ -50,7 +52,9 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation(FVector LastHitImpa
 	
 	const FVector RandomAdjustmentVector = FVector(FMath::RandRange(-60.f, 60.f),FMath::RandRange(-60.f, 60.f), 0.f);
 	const FVector ResultVector = RandomAdjustmentVector.Rotation().RotateVector(LastHitImpactVelocity);
-	GetMesh()->AddImpulseAtLocation(ResultVector,GetActorLocation());
+	HandleDeathLaunch();
+	//Not work for replication, so try to do it in gameplay cue
+	//GetMesh()->AddImpulseAtLocation(ResultVector,GetActorLocation());
 	
 	if (AAuraEnemy* EnemyActor = Cast<AAuraEnemy>(this))
 	{
@@ -68,9 +72,36 @@ UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 	return HitReactMontage;
 }
 
+FTaggedMontage AAuraCharacterBase::GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag)
+{
+	for (FTaggedMontage TaggedMontage : AttackMontages)
+	{
+		if (TaggedMontage.MontageTag == MontageTag)
+		{
+			return TaggedMontage;
+		}
+	}
+	return FTaggedMontage();
+}
+
+int32 AAuraCharacterBase::GetMinionCount_Implementation()
+{
+	return MinionCount;
+}
+
+void AAuraCharacterBase::ModifyMinionCount_Implementation(const int32 Amount)
+{
+	MinionCount += Amount;
+}
+
 TArray<FTaggedMontage> AAuraCharacterBase::GetAttackMontages_Implementation()
 {
 	return AttackMontages;
+}
+
+UNiagaraSystem* AAuraCharacterBase::GetBloodEffect_Implementation()
+{
+	return BloodEffect;
 }
 
 void AAuraCharacterBase::BeginPlay()
@@ -82,17 +113,21 @@ void AAuraCharacterBase::BeginPlay()
 FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag)
 {
 	const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
-	if (MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_Weapon))
+	if (MontageTag.MatchesTagExact(GameplayTags.CombatSocket_Weapon))
 	{
 		return Weapon->GetSocketLocation(WeaponTipSocketName);
 	}
-	if (MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_LeftHand))
+	if (MontageTag.MatchesTagExact(GameplayTags.CombatSocket_LeftHand))
 	{
 		return GetMesh()->GetSocketLocation(LeftHandTipSocketName);
 	}
-	if (MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_RightHand))
+	if (MontageTag.MatchesTagExact(GameplayTags.CombatSocket_RightHand))
 	{
 		return GetMesh()->GetSocketLocation(RightHandTipSocketName);
+	}
+	if (MontageTag.MatchesTagExact(GameplayTags.CombatSocket_Tail))
+	{
+		return GetMesh()->GetSocketLocation(TailSocketName);
 	}
 	return FVector();
 }

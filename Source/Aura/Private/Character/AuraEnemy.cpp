@@ -99,6 +99,7 @@ void AAuraEnemy::BeginPlay()
 		AuraUserWidget->SetWidgetController(this);
 	}
 
+	//The AttributeSet will not be set in constructor if a BP based on aura enemy is made by duplication. It will let to a null ref of AttributeSet
 	if (const UAuraAttributeSet* AuraAS = CastChecked<UAuraAttributeSet>(AttributeSet))
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAS->GetHealthAttribute()).AddLambda(

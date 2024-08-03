@@ -8,6 +8,7 @@
 #include "Data/CharacterClassInfo.h"
 #include "AuraAbilitySystemLibrary.generated.h"
 
+class UMaterialAssetInfo;
 struct FGameplayEffectContextHandle;
 class UAbilitySystemComponent;
 class UAttributeMenuWidgetController;
@@ -21,6 +22,7 @@ class AURA_API UAuraAbilitySystemLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
+	
 	UFUNCTION(BlueprintPure, Category="AuraAbiilitySystemLibrary|WidgetController")
 	static UOverlayWidgetController* GetOverlayWidgetController(const UObject* WorldContextObject);
 
@@ -35,6 +37,9 @@ public:
 
 	UFUNCTION(BlueprintCallable,Category="AuraAbiilitySystemLibrary|CharacterClassDefaults")
 	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable,Category="AuraAbiilitySystemLibrary|MateiralDefaults")
+	static UMaterialAssetInfo* GetMaterialAssetInfo(const UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintPure,Category="AuraAbiilitySystemLibrary|GameplayEffrect")
 	static bool IsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandle);
